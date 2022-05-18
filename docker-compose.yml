@@ -37,6 +37,12 @@ services:
       - "traefik.enable=true"
       - "traefik.docker.network=proxy"
 
+      ## HTTP Routers
+      - "traefik.http.routers.airsonic-adv-secure.entrypoints=websecure"
+      - "traefik.http.routers.airsonic-adv-secure.rule=Host(`${DOMAIN_NAME}`)"
+      - "traefik.http.routers.airsonic-adv.tls.certresolver=letsencrypt"
+
+      ## Middlewares
       - "traefik.http.middlewares.custom.headers.browserXSSFilter=true"
       - "traefik.http.middlewares.custom.headers.contentTypeNosniff=true"
       - "traefik.http.middlewares.custom.headers.forceSTSHeader=true"
@@ -45,9 +51,8 @@ services:
       - "traefik.http.middlewares.custom.headers.stsIncludeSubdomains=true"
       - "traefik.http.middlewares.custom.headers.stsPreload=true"
       - "traefik.http.middlewares.custom.headers.stsSeconds=315360000"
-      - "traefik.http.routers.airsonic-adv-secure.entrypoints=websecure"
-      - "traefik.http.routers.airsonic-adv-secure.rule=Host(`${DOMAIN_NAME}`)"
-      - "traefik.http.routers.airsonic-adv.tls.certresolver=letsencrypt"
+
+      ## HTTP Services
       - "traefik.http.services.airsonic-adv.loadbalancer.server.port=4040"
 
       - "traefik.frontend.headers.customResponseHeaders: Feature-Policy:camera 'none'; fullscreen 'none'; geolocation 'none'; microphone 'none'; payment 'none'; speaker 'none'; usb 'none'; vibrate 'none'; vr 'none';"
