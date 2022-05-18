@@ -1,0 +1,62 @@
+version: "3"
+
+services:
+  airsonic-advanced:
+    container_name: airsonic-advanced
+    #    image: airsonic/airsonic
+    image: airsonicadvanced/airsonic-advanced
+    domainname: ${DOMAIN_NAME}
+    restart: unless-stopped
+    #    user: 1001:1001
+
+    networks:
+      - proxy
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TZ}
+      - JAVA_OPTS=-Dserver.use-forward-headers=true
+
+    volumes:
+      #      - ./airsonic-data/:/airsonic-data/
+      #      - ./airsonic-playlists/:/playlists
+      #      - ./airsonic-podcasts/:/podcasts
+      #      - /media/Music:/media/Music:ro
+
+      #      - ./config:/config
+      - ./playlists:/var/playlists
+      - ./podcasts:/var/podcasts
+      - ./airsonic:/var/airsonic
+      - /media/Music:/var/music
+
+        #      - ./data:/airsonic/data
+        #      - /media/Music:/airsonic/music:ro
+        #      - ./podcasts:/airsonic/podcasts
+        #      - ./playlists:/airsonic/playlists
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=proxy"
+
+      - "traefik.http.middlewares.custom.headers.browserXSSFilter=true"
+      - "traefik.http.middlewares.custom.headers.contentTypeNosniff=true"
+      - "traefik.http.middlewares.custom.headers.forceSTSHeader=true"
+      - "traefik.http.middlewares.custom.headers.frameDeny=true"
+      - "traefik.http.middlewares.custom.headers.sslredirect=true"
+      - "traefik.http.middlewares.custom.headers.stsIncludeSubdomains=true"
+      - "traefik.http.middlewares.custom.headers.stsPreload=true"
+      - "traefik.http.middlewares.custom.headers.stsSeconds=315360000"
+      - "traefik.http.routers.airsonic-adv-secure.entrypoints=websecure"
+      - "traefik.http.routers.airsonic-adv-secure.rule=Host(`${DOMAIN_NAME}`)"
+      - "traefik.http.routers.airsonic-adv.tls.certresolver=letsencrypt"
+      - "traefik.http.services.airsonic-adv.loadbalancer.server.port=4040"
+
+      - "traefik.frontend.headers.customResponseHeaders: Feature-Policy:camera 'none'; fullscreen 'none'; geolocation 'none'; microphone 'none'; payment 'none'; speaker 'none'; usb 'none'; vibrate 'none'; vr 'none';"
+
+        # NOUVEAU
+#      - "traefik.frontend.headers.browserXSSFilter=true"
+#      - "traefik.frontend.headers.customResponseHeaders: X-Robots-Tag:noindex,nofollow,nosnippet,noarchive,notranslate,noimageindex"
+
+networks:
+  proxy:
+    external:
+      name: proxy

@@ -1,0 +1,11 @@
+# Environment variables
+.env
+
+# Build folders
+airsonic/
+airsonic-data/
+airsonic-playlists/
+airsonic-podcasts/
+playlists/
+podcasts/
+data/
