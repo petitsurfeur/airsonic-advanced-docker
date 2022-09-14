@@ -37,7 +37,14 @@ services:
       - "traefik.enable=true"
       - "traefik.docker.network=proxy"
 
-      ## HTTP Routers
+     ## HTTP Router
+      - "traefik.http.routers.airsonic-adv.entrypoints=web"
+      - "traefik.http.routers.airsonic-adv.rule=Host(`${DOMAIN_NAME}`)"
+      - "traefik.http.routers.airsonic-adv.middlewares=secureHeaders@file"
+
+
+
+      ## HTTPS Routers
       - "traefik.http.routers.airsonic-adv-secure.entrypoints=websecure"
       - "traefik.http.routers.airsonic-adv-secure.rule=Host(`${DOMAIN_NAME}`)"
       - "traefik.http.routers.airsonic-adv.tls.certresolver=letsencrypt"
@@ -63,5 +70,5 @@ services:
 
 networks:
   proxy:
-    name: proxy
-    external: true
+    external:
+      name: proxy
