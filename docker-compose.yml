@@ -4,7 +4,8 @@ services:
   airsonic-advanced:
     container_name: airsonic-advanced
     #    image: airsonic/airsonic
-    image: airsonicadvanced/airsonic-advanced
+    #    image: airsonicadvanced/airsonic-advanced
+    image: ghcr.io/kagemomiji/airsonic-advanced:latest
     domainname: ${DOMAIN_NAME}
     restart: unless-stopped
     #    user: 1001:1001
@@ -70,5 +71,5 @@ services:
 
 networks:
   proxy:
-    external:
-      name: proxy
+    name: proxy
+    external: true
